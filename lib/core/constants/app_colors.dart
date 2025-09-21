@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 
 @immutable
 class AppColors {
-  //? Blues
-  static const Color darkBlue = Color(0xFF0A0B39); // dark blue
-  static const Color lightBlue = Color(0xFF1D85E4);
-  static const Color accentBlue = Color(0xFF23224A);
+  // Primary colors - Deep storm blue
+  static const Color stormBlue = Color(0xFF1E3A5F);
+  static const Color deepSky = Color(0xFF2C5F7C);
+  static const Color lightStorm = Color(0xFF4A7C95);
 
-  static const Color grey = Color(0xFFB7B6C4);
-  static const Color blueGrey = Color(0xFF0A0B39);
-  static const Color white = Color(0xFFFFFFFF);
+  // Accent colors
+  static const Color thunderYellow = Color(0xFFFFB74D);
+  static const Color rainGray = Color(0xFF546E7A);
+  static const Color cloudWhite = Color(0xFFF5F5F5);
 
-  //! Blacks
-  static const Color black = Color(0xFF000000);
-  static const Color secondaryBlack = Color(0xFF060620);
+  // Dark theme colors
+  static const Color nightSky = Color(0xFF0D1B2A);
+  static const Color darkCloud = Color(0xFF1B263B);
+  static const Color mistGray = Color(0xFF415A77);
 }

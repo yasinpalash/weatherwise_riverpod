@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:weatherwise/providers/theme_provider.dart';
 import 'package:weatherwise/screens/home_screens.dart';
 
 class App extends ConsumerWidget {
@@ -7,11 +8,11 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final theme = ref.watch(themeProvider);
+    final theme = ref.watch(themeProvider);
 
     return MaterialApp(
       title: 'Weather Wise',
-      // theme: theme,
+      theme: theme,
       home: HomeScreen(),
     );
   }
