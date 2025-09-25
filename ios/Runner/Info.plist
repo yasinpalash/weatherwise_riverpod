@@ -2,6 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to your location while using the app.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>This app needs access to your location even in the background.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to your location.</string>
+    <key>NSLocationTemporaryUsageDescriptionDictionary</key>
+    <dict>
+        <key>Purpose</key>
+        <string>We use your location to provide weather data for your area.</string>
+    </dict>
     <key>NSLocalNetworkUsageDescription</key>
     <string>This app requires access to the local network for debugging.</string>
 	<key>CFBundleDevelopmentRegion</key>
