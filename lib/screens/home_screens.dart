@@ -12,13 +12,11 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final screens = ref.watch(screenProvider);
     final currentScreenIndex = ref.watch(screenIndexProvider);
     final hasData = ref.watch(hasDataProvider);
-    final locationService = ref.watch(locationProvider);
     final onInternetStatusChange = ref.watch(internetStatusChangeProvider);
-
+    final locationService = ref.watch(locationProvider);
     if (hasData) {
       return Scaffold(
         body: screens[currentScreenIndex],

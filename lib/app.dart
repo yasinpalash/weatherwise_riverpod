@@ -13,7 +13,7 @@ class App extends ConsumerWidget {
     return MaterialApp(
       title: 'Weather Wise',
       theme: theme,
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
