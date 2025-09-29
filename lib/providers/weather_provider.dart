@@ -16,4 +16,14 @@ final weatherProvider = FutureProvider<WeatherData?>((ref) async {
       Hive.box<bool>(HiveConstants.hasDataFetchedOnceBoxName);
 
   WeatherData? weatherData;
+
+  if( searchState.isSearching){
+    if(await internetState.isConnected()){
+     // weatherData=await ref.read();
+    }
+
+
+  }
+
 });
+
