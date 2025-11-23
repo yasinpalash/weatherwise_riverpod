@@ -4,26 +4,53 @@ import 'package:weatherwise/core/constants/hive_constants.dart';
 import 'package:weatherwise/models/weather_model.dart';
 import 'package:weatherwise/providers/internet_provider.dart';
 import 'package:weatherwise/providers/search_provider.dart';
+import 'package:weatherwise/providers/services_provider.dart';
 
-final weatherProvider = FutureProvider<WeatherData?>((ref) async {
-  final searchState = ref.read(searchProvider);
-  final internetState = ref.read(internetStatusProvider);
+final weatherProvider = FutureProvider<WeatherData?>(
+  (ref) async {
+    final searchState = ref.read(searchProvider);
+    final internetState = ref.read(internetStatusProvider);
 
-  //! Hive Boxes
-  final weatherDataBox =
-      Hive.box<WeatherData>(HiveConstants.weatherDataBoxName);
-  final hasDataFetchedOnceBox =
-      Hive.box<bool>(HiveConstants.hasDataFetchedOnceBoxName);
+    //! Hive Boxes
+    final weatherDataBox =
+        Hive.box<WeatherData>(HiveConstants.weatherDataBoxName);
+    final hasDataFetchedOnceBox =
+        Hive.box<bool>(HiveConstants.hasDataFetchedOnceBoxName);
 
-  WeatherData? weatherData;
+    WeatherData? weatherData;
 
-  if( searchState.isSearching){
-    if(await internetState.isConnected()){
-     // weatherData=await ref.read();
+    if (searchState.isSearching) {
+      //! for searched location
+      if (await internetState.isConnected()) {
+        weatherData = await ref
+            .read(apiServiceProvider)
+            .fetchWeatherData(searchState.lat, searchState.lon);
+      }
+      if (weatherData != null) {
+        final place = await ref.read(locationServiceProvider).getUserLocation(
+              searchState.lat,
+              searchState.lon,
+            );
+      }
+    } else {
+      if (await internetState.isConnected()) {
+        //! for current location with internet
+        final position =
+            await ref.read(locationServiceProvider).getUserPosition();
+        weatherData = await ref.read(apiServiceProvider).fetchWeatherData(
+              position.latitude,
+              position.longitude,
+            );
+        if (weatherData != null) {
+          weatherDataBox.put(HiveConstants.weatherDataKey, weatherData);
+          hasDataFetchedOnceBox.put(HiveConstants.hasDataFetchedOnceKey, true);
+        }
+      } else {
+        //! Offline handling for current location
+        weatherData = weatherDataBox.get(HiveConstants.weatherDataKey,
+            defaultValue: null);
+      }
     }
-
-
-  }
-
-});
-
+    return weatherData;
+  },
+);
