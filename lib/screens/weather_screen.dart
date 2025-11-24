@@ -17,6 +17,7 @@ class WeatherScreen extends ConsumerWidget {
              SizedBox(height: 5),
              LocationWidget(),
              SizedBox(height: 10),
+
           ],
         ),
       ),
