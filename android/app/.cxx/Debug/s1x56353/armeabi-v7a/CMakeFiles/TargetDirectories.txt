@@ -1,2 +1,0 @@
-/Users/neoscoder5/Documents/office project/WeatherWise/android/app/.cxx/Debug/s1x56353/armeabi-v7a/CMakeFiles/rebuild_cache.dir
-/Users/neoscoder5/Documents/office project/WeatherWise/android/app/.cxx/Debug/s1x56353/armeabi-v7a/CMakeFiles/edit_cache.dir

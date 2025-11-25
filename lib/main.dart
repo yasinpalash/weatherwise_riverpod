@@ -4,6 +4,10 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 import 'app.dart';
 import 'core/constants/hive_constants.dart';
+import 'models/current_weather.dart';
+import 'models/daily_weather.dart';
+import 'models/hourly_weather.dart';
+import 'models/weather_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +17,17 @@ void main() async {
   Hive.initFlutter();
   Hive.init(appStorageDirPath.path);
 
+
+  //! registering the adapters
+  Hive.registerAdapter(WeatherDataAdapter());
+  Hive.registerAdapter(CurrentAdapter());
+  Hive.registerAdapter(HourlyAdapter());
+  Hive.registerAdapter(DailyAdapter());
+  Hive.registerAdapter(WeatherAdapter());
+  Hive.registerAdapter(TempAdapter());
+
   //! Opening Hive boxes
+  await Hive.openBox<WeatherData>(HiveConstants.weatherDataBoxName);
   await Hive.openBox<String>(HiveConstants.prefBoxName);
   await Hive.openBox<bool>(HiveConstants.hasDataFetchedOnceBoxName);
 
