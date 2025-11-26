@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
 import '../models/weather_model.dart';
 import '../providers/weather_provider.dart';
+import '../utils/format_temp.dart';
 import 'error_widget.dart';
 
 class CurrentWidget extends ConsumerWidget {
@@ -15,7 +15,6 @@ class CurrentWidget extends ConsumerWidget {
     return weather.when(data: (weather) {
       return _buildCurrentWidget(context, weather, false, ref);
     }, error: (err, st) {
-      print(err);
       return const ShowErrorToUser();
     }, loading: () {
       return _buildCurrentWidget(context, null, true, ref);
@@ -28,7 +27,10 @@ class CurrentWidget extends ConsumerWidget {
       enabled: isLoading,
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(.1),
+          color: Theme.of(context)
+              .colorScheme
+              .onSurfaceVariant
+              .withValues(alpha: .1),
           borderRadius: BorderRadius.circular(15),
         ),
         padding: const EdgeInsets.symmetric(
@@ -50,6 +52,37 @@ class CurrentWidget extends ConsumerWidget {
                         radius: 40,
                       ),
                 const Spacer(),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        weather != null
+                            ? getFormattedTemperature(
+                                ref, weather.current!.temp!)
+                            : 'Load',
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        weather != null
+                            ? '${weather.current!.weather![0].description}'
+                            : 'description',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: .6),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 15),
               ],
             )
           ],
