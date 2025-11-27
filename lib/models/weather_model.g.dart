@@ -17,21 +17,33 @@ class WeatherDataAdapter extends TypeAdapter<WeatherData> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return WeatherData(
-      current: fields[0] as Current?,
-      hourly: (fields[1] as List?)?.cast<Hourly>(),
-      daily: (fields[2] as List?)?.cast<Daily>(),
+      lat: fields[0] as double?,
+      lon: fields[1] as double?,
+      timezone: fields[2] as String?,
+      timezoneOffset: fields[3] as int?,
+      current: fields[4] as Current?,
+      hourly: (fields[5] as List?)?.cast<Hourly>(),
+      daily: (fields[6] as List?)?.cast<Daily>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, WeatherData obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(7)
       ..writeByte(0)
-      ..write(obj.current)
+      ..write(obj.lat)
       ..writeByte(1)
-      ..write(obj.hourly)
+      ..write(obj.lon)
       ..writeByte(2)
+      ..write(obj.timezone)
+      ..writeByte(3)
+      ..write(obj.timezoneOffset)
+      ..writeByte(4)
+      ..write(obj.current)
+      ..writeByte(5)
+      ..write(obj.hourly)
+      ..writeByte(6)
       ..write(obj.daily);
   }
 

@@ -17,14 +17,8 @@ void main() async {
   Hive.initFlutter();
   Hive.init(appStorageDirPath.path);
 
-
   //! registering the adapters
-  Hive.registerAdapter(WeatherDataAdapter());
-  Hive.registerAdapter(CurrentAdapter());
-  Hive.registerAdapter(HourlyAdapter());
-  Hive.registerAdapter(DailyAdapter());
-  Hive.registerAdapter(WeatherAdapter());
-  Hive.registerAdapter(TempAdapter());
+  await registerHiveAdapters();
 
   //! Opening Hive boxes
   await Hive.openBox<WeatherData>(HiveConstants.weatherDataBoxName);
@@ -36,4 +30,15 @@ void main() async {
       child: App(),
     ),
   );
+}
+
+
+Future<void> registerHiveAdapters() async {
+  if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(WeatherDataAdapter());
+  if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(HourlyAdapter());
+  if (!Hive.isAdapterRegistered(2)) Hive.registerAdapter(DailyAdapter());
+  if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(DailyTempAdapter());
+  if (!Hive.isAdapterRegistered(4)) Hive.registerAdapter(CurrentAdapter());
+  if (!Hive.isAdapterRegistered(5)) Hive.registerAdapter(WeatherDescriptionAdapter());
+  if (!Hive.isAdapterRegistered(6)) Hive.registerAdapter(DailyFeelsLikeAdapter());
 }

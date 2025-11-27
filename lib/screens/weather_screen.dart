@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weatherwise/widgets/current_widget.dart';
-
+import '../widgets/daily_widget.dart';
+import '../widgets/hourly_widget.dart';
 import '../widgets/location_widget.dart';
 
 class WeatherScreen extends ConsumerWidget {
@@ -15,11 +16,15 @@ class WeatherScreen extends ConsumerWidget {
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
           children: const [
-             SizedBox(height: 5),
-             LocationWidget(),
-             SizedBox(height: 10),
-            CurrentWidget()
-
+            SizedBox(height: 5),
+            LocationWidget(),
+            SizedBox(height: 10),
+            CurrentWidget(),
+            SizedBox(height: 10),
+            HourlyWidget(),
+            SizedBox(height: 10),
+            DailyWidget(),
+            SizedBox(height: 8),
           ],
         ),
       ),

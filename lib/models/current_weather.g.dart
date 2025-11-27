@@ -20,22 +20,25 @@ class CurrentAdapter extends TypeAdapter<Current> {
       dt: fields[0] as int?,
       sunrise: fields[1] as int?,
       sunset: fields[2] as int?,
-      temp: fields[3] as int?,
+      temp: fields[3] as double?,
       feelsLike: fields[4] as double?,
       pressure: fields[5] as int?,
       humidity: fields[6] as int?,
-      uvi: fields[7] as double?,
-      clouds: fields[8] as int?,
-      visibility: fields[9] as int?,
-      windSpeed: fields[10] as double?,
-      weather: (fields[11] as List?)?.cast<Weather>(),
+      dewPoint: fields[7] as double?,
+      uvi: fields[8] as double?,
+      clouds: fields[9] as int?,
+      visibility: fields[10] as int?,
+      windSpeed: fields[11] as double?,
+      windDeg: fields[12] as int?,
+      windGust: fields[13] as double?,
+      weather: (fields[14] as List?)?.cast<WeatherDescription>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Current obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.dt)
       ..writeByte(1)
@@ -51,14 +54,20 @@ class CurrentAdapter extends TypeAdapter<Current> {
       ..writeByte(6)
       ..write(obj.humidity)
       ..writeByte(7)
-      ..write(obj.uvi)
+      ..write(obj.dewPoint)
       ..writeByte(8)
-      ..write(obj.clouds)
+      ..write(obj.uvi)
       ..writeByte(9)
-      ..write(obj.visibility)
+      ..write(obj.clouds)
       ..writeByte(10)
-      ..write(obj.windSpeed)
+      ..write(obj.visibility)
       ..writeByte(11)
+      ..write(obj.windSpeed)
+      ..writeByte(12)
+      ..write(obj.windDeg)
+      ..writeByte(13)
+      ..write(obj.windGust)
+      ..writeByte(14)
       ..write(obj.weather);
   }
 
@@ -73,17 +82,17 @@ class CurrentAdapter extends TypeAdapter<Current> {
           typeId == other.typeId;
 }
 
-class WeatherAdapter extends TypeAdapter<Weather> {
+class WeatherDescriptionAdapter extends TypeAdapter<WeatherDescription> {
   @override
   final int typeId = 5;
 
   @override
-  Weather read(BinaryReader reader) {
+  WeatherDescription read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Weather(
+    return WeatherDescription(
       id: fields[0] as int?,
       main: fields[1] as String?,
       description: fields[2] as String?,
@@ -92,7 +101,7 @@ class WeatherAdapter extends TypeAdapter<Weather> {
   }
 
   @override
-  void write(BinaryWriter writer, Weather obj) {
+  void write(BinaryWriter writer, WeatherDescription obj) {
     writer
       ..writeByte(4)
       ..writeByte(0)
@@ -111,7 +120,7 @@ class WeatherAdapter extends TypeAdapter<Weather> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WeatherAdapter &&
+      other is WeatherDescriptionAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

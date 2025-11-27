@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
 import '../models/weather_model.dart';
 import '../providers/weather_provider.dart';
+import '../utils/format_temp.dart';
+import 'current_details_widget.dart';
 import 'error_widget.dart';
 
 class CurrentWidget extends ConsumerWidget {
@@ -11,47 +13,114 @@ class CurrentWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weather = ref.watch(weatherProvider);
-    return weather.when(data: (weather) {
-      return _buildCurrentWidget(context, weather, false, ref);
-    }, error: (err, st) {
-      print(err);
-      return const ShowErrorToUser();
-    }, loading: () {
-      return _buildCurrentWidget(context, null, true, ref);
-    });
+    final weatherAsync = ref.watch(weatherProvider);
+
+    return weatherAsync.when(
+      data: (weather) => _buildBody(context, weather, false, ref),
+      error: (err, st) => const ShowErrorToUser(),
+      loading: () => _buildBody(context, null, true, ref),
+    );
   }
 
-  _buildCurrentWidget(BuildContext context, WeatherData? weather,
-      bool isLoading, WidgetRef ref) {
+  Widget _buildBody(BuildContext context, WeatherData? weather, bool isLoading,
+      WidgetRef ref) {
+    final current = weather?.current;
+    final theme = Theme.of(context);
     return Skeletonizer(
       enabled: isLoading,
       child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(.1),
-          borderRadius: BorderRadius.circular(15),
+          color: theme.colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.2),
+          ),
         ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-        ),
-        margin: const EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                weather != null
-                    ? Image.asset(
-                        'assets/weather/${weather.current!.weather![0].icon}.png',
-                        height: 80,
-                        width: 80,
-                      )
-                    : const CircleAvatar(
-                        radius: 40,
+                Container(
+                  height: 70,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: current != null
+                      ? Image.asset(
+                          'assets/weather/${current.weather![0].icon}.png',
+                          fit: BoxFit.contain,
+                        )
+                      : const SizedBox(),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        current != null
+                            ? DateFormat('EEE, MMM d').format(
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    current.dt! * 1000))
+                            : 'Loading...',
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
-                const Spacer(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            current != null
+                                ? getFormattedTemperature(
+                                    ref, current.temp!.toInt())
+                                : '--',
+                            style: theme.textTheme.displaySmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              height: 1.0,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                current != null
+                                    ? current.weather![0].description!
+                                    : '',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                current != null
+                                    ? 'Feels ${current.feelsLike?.round()}°'
+                                    : '',
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
-            )
+            ),
+            const SizedBox(height: 20),
+            Divider(
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3)),
+            const SizedBox(height: 15),
+            CurrentDetailsWidget(currentData: current),
           ],
         ),
       ),
