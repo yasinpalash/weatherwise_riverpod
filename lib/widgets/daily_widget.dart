@@ -47,7 +47,7 @@ class DailyWidget extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         SizedBox(
-          height: 200, // Increased height for better spacing
+          height: 230,
           child: Skeletonizer(
             enabled: isLoading,
             child: ListView.separated(
@@ -108,14 +108,12 @@ class _DailyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
-    // Text color logic: White if current day (dark bg), else Theme color
     final textColor = isCurrent ? Colors.white : colorScheme.onSurface;
     final secondaryTextColor =
         isCurrent ? Colors.white70 : colorScheme.onSurfaceVariant;
 
     return Container(
-
+      width: 120,
       decoration: BoxDecoration(
         gradient: isCurrent
             ? LinearGradient(
@@ -149,11 +147,10 @@ class _DailyCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-
             Column(
               children: [
                 Text(
-                  DateFormat('EEEE').format(date), // Full day name (Monday)
+                  DateFormat('EEEE').format(date),
                   style: TextStyle(
                     color: textColor,
                     fontWeight: FontWeight.bold,
@@ -169,8 +166,6 @@ class _DailyCard extends StatelessWidget {
                 ),
               ],
             ),
-
-            // Icon Section
             Container(
               decoration: isCurrent
                   ? null
@@ -185,8 +180,6 @@ class _DailyCard extends StatelessWidget {
                 width: 45,
               ),
             ),
-
-            // Temperature Section
             Column(
               children: [
                 Text(
@@ -206,8 +199,6 @@ class _DailyCard extends StatelessWidget {
                 ),
               ],
             ),
-
-            // Details Row (Humidity/Wind)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               decoration: BoxDecoration(
@@ -239,7 +230,6 @@ class _DailyCard extends StatelessWidget {
   }
 }
 
-// Small helper widget for the bottom details
 class _DetailItem extends StatelessWidget {
   final IconData icon;
   final String value;
@@ -264,7 +254,6 @@ class _DetailItem extends StatelessWidget {
   }
 }
 
-// A dedicated skeleton widget to ensure loading state matches actual UI shape
 class _DailyCardSkeleton extends StatelessWidget {
   const _DailyCardSkeleton();
 
