@@ -13,110 +13,279 @@ class DailyWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weather = ref.watch(weatherProvider);
-    return weather.when(data: (weather) {
-      return _buildDailyWidget(context, weather, false, ref);
-    }, error: (err, st) {
-      return const ShowErrorToUser();
-    }, loading: () {
-      return _buildDailyWidget(context, null, true, ref);
-    });
+    final weatherAsync = ref.watch(weatherProvider);
+
+    return weatherAsync.when(
+      data: (weather) => _buildDailyList(context, ref, weather!, false),
+      error: (err, st) => const ShowErrorToUser(),
+      loading: () => _buildDailyList(context, ref, null, true),
+    );
   }
 
-  Widget _buildDailyWidget(BuildContext context, WeatherData? weather,
-      bool isLoading, WidgetRef ref) {
-    return Skeletonizer(
-      enabled: isLoading,
-      child: Container(
-        margin: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Theme.of(context)
-              .colorScheme
-              .onSurfaceVariant
-              .withValues(alpha: .1),
-          borderRadius: BorderRadius.circular(15),
+  Widget _buildDailyList(BuildContext context, WidgetRef ref,
+      WeatherData? weather, bool isLoading) {
+    final dailyCount = isLoading ? 7 : weather?.daily?.length ?? 0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Next 7 Days',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const Icon(Icons.calendar_month_outlined,
+                  size: 20, color: Colors.grey),
+            ],
+          ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 200, // Increased height for better spacing
+          child: Skeletonizer(
+            enabled: isLoading,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemCount: dailyCount,
+              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              itemBuilder: (context, index) {
+                if (isLoading) {
+                  return const _DailyCardSkeleton();
+                }
+                final day = weather!.daily![index];
+                final date = getFormattedDateTime(day.dt!);
+                final icon = day.weather![0].icon;
+                final maxTemp =
+                    getFormattedTemperature(ref, day.temp!.max!.toInt());
+                final minTemp =
+                    getFormattedTemperature(ref, day.temp!.min!.toInt());
+
+                return _DailyCard(
+                  date: date,
+                  icon: icon.toString(),
+                  maxTemp: maxTemp,
+                  minTemp: minTemp,
+                  humidity: day.humidity!,
+                  windSpeed: day.windSpeed!,
+                  isCurrent: index == 0,
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DailyCard extends StatelessWidget {
+  final DateTime date;
+  final String icon;
+  final String maxTemp;
+  final String minTemp;
+  final int humidity;
+  final double windSpeed;
+  final bool isCurrent;
+
+  const _DailyCard({
+    required this.date,
+    required this.icon,
+    required this.maxTemp,
+    required this.minTemp,
+    required this.humidity,
+    required this.windSpeed,
+    this.isCurrent = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    // Text color logic: White if current day (dark bg), else Theme color
+    final textColor = isCurrent ? Colors.white : colorScheme.onSurface;
+    final secondaryTextColor =
+        isCurrent ? Colors.white70 : colorScheme.onSurfaceVariant;
+
+    return Container(
+
+      decoration: BoxDecoration(
+        gradient: isCurrent
+            ? LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  colorScheme.primary,
+                  colorScheme.tertiary,
+                ],
+              )
+            : null,
+        color: isCurrent ? null : colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          if (isCurrent)
+            BoxShadow(
+              color: colorScheme.primary.withValues(alpha: 0.4),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            )
+          else
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              alignment: Alignment.center,
-              child: Text(
-                weather != null
-                    ? 'Weather forecast for this week'
-                    : 'Daily data Loading...',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 15,
+
+            Column(
+              children: [
+                Text(
+                  DateFormat('EEEE').format(date), // Full day name (Monday)
+                  style: TextStyle(
+                    color: textColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
                 ),
+                Text(
+                  DateFormat('MMM d').format(date),
+                  style: TextStyle(
+                    color: secondaryTextColor,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+
+            // Icon Section
+            Container(
+              decoration: isCurrent
+                  ? null
+                  : BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colorScheme.surface,
+                    ),
+              padding: const EdgeInsets.all(8),
+              child: Image.asset(
+                'assets/weather/$icon.png',
+                height: 45,
+                width: 45,
               ),
             ),
-            const SizedBox(height: 12),
-            weather != null
-                ? SizedBox(
-                    height: MediaQuery.of(context).size.height * .45,
-                    child: ListView.builder(
-                      itemCount: weather.daily!.length,
-                      itemBuilder: (context, index) => Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 5),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant
-                                  .withValues(alpha: .12),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            height: MediaQuery.sizeOf(context).height * .08,
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 80,
-                                  child: Text(
-                                    DateFormat('E').format(
-                                      getFormattedDateTime(
-                                          weather.daily![index].dt!),
-                                    ),
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                ),
-                                SizedBox(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/weather/${weather.daily![index].weather![0].icon}.png',
-                                        height: 30,
-                                      ),
-                                      Text(
-                                        weather.daily![index].weather![0]
-                                            .description!,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Text(
-                                  '${getFormattedTemperature(ref, weather.daily![index].temp!.max!.toInt(), showUnit: false)} / ${getFormattedTemperature(ref, weather.daily![index].temp!.min!.toInt(), showUnit: false)}',
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : SizedBox(
-                    height: MediaQuery.of(context).size.height * .45,
-                    child: const Center(
-                      child: Text('Loading...'),
-                    ),
+
+            // Temperature Section
+            Column(
+              children: [
+                Text(
+                  maxTemp,
+                  style: TextStyle(
+                    color: textColor,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 20,
                   ),
+                ),
+                Text(
+                  minTemp,
+                  style: TextStyle(
+                    color: secondaryTextColor,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+
+            // Details Row (Humidity/Wind)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              decoration: BoxDecoration(
+                color: isCurrent
+                    ? Colors.white.withValues(alpha: 0.2)
+                    : colorScheme.surface.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _DetailItem(
+                    icon: Icons.water_drop_outlined,
+                    value: '$humidity%',
+                    color: textColor,
+                  ),
+                  _DetailItem(
+                    icon: Icons.air,
+                    value: '${windSpeed.round()}',
+                    color: textColor,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// Small helper widget for the bottom details
+class _DetailItem extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final Color color;
+
+  const _DetailItem(
+      {required this.icon, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: color),
+        const SizedBox(width: 4),
+        Text(
+          value,
+          style: TextStyle(
+              fontSize: 11, color: color, fontWeight: FontWeight.w500),
+        ),
+      ],
+    );
+  }
+}
+
+// A dedicated skeleton widget to ensure loading state matches actual UI shape
+class _DailyCardSkeleton extends StatelessWidget {
+  const _DailyCardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 130,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: const Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Bone.text(width: 60),
+          Bone.text(width: 40, fontSize: 10),
+          Bone.circle(size: 45),
+          Bone.text(width: 50, fontSize: 20),
+          Bone.text(width: 80, fontSize: 12),
+        ],
       ),
     );
   }
