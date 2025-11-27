@@ -1,88 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-import 'package:weatherwise/models/weather_model.dart';
-import '../providers/weather_provider.dart';
-import 'error_widget.dart';
+import 'package:intl/intl.dart';
+import '../models/current_weather.dart';
 
 class CurrentDetailsWidget extends ConsumerWidget {
-  const CurrentDetailsWidget({super.key});
+  final Current? currentData;
+
+  const CurrentDetailsWidget({super.key, required this.currentData});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weather = ref.watch(weatherProvider);
-    return weather.when(
-      data: (weather) {
-        return _buildCurrentDetailsWidget(context, weather, false);
-      },
-      error: (err, st) {
-        return const ShowErrorToUser();
-      },
-      loading: () {
-        return _buildCurrentDetailsWidget(context, null, true);
-      },
+    if (currentData == null) return const SizedBox.shrink();
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildGridItem(context,
+                label: "Wind",
+                value: "${currentData!.windSpeed} m/s",
+                icon: Icons.air,
+                color: Colors.blueAccent),
+            _buildGridItem(context,
+                label: "Humidity",
+                value: "${currentData!.humidity}%",
+                icon: Icons.water_drop_outlined,
+                color: Colors.lightBlue),
+            _buildGridItem(context,
+                label: "UV Index",
+                value: "${currentData!.uvi}",
+                icon: Icons.wb_sunny_outlined,
+                color: Colors.orangeAccent),
+          ],
+        ),
+        const SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildGridItem(context,
+                label: "Visibility",
+                value:
+                    "${(currentData!.visibility! / 1000).toStringAsFixed(1)} km",
+                icon: Icons.remove_red_eye_outlined,
+                color: Colors.teal),
+            _buildGridItem(context,
+                label: "Pressure",
+                value: "${currentData!.pressure} hPa",
+                icon: Icons.speed,
+                color: Colors.purpleAccent),
+            _buildGridItem(context,
+                label: "Sunset",
+                value: _formatTime(currentData!.sunset!),
+                icon: Icons.nights_stay_outlined,
+                color: Colors.indigoAccent),
+          ],
+        )
+      ],
     );
   }
 
-  Widget _buildCurrentDetailsWidget(
-      BuildContext context, WeatherData? weather, bool isLoading) {
-    return Skeletonizer(
-        enabled: isLoading,
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildCurrentDetailsItem(
-                context,
-                value: weather != null
-                    ? '${weather.current!.windSpeed} %'
-                    : 'Loading...',
-                imagePath: 'assets/icons/windspeed.png',
-              ),
-              _buildCurrentDetailsItem(
-                context,
-                value: weather != null
-                    ? '${weather.current!.clouds} %'
-                    : 'Loading...',
-                imagePath: 'assets/icons/clouds.png',
-              ),
-              _buildCurrentDetailsItem(
-                context,
-                value: weather != null
-                    ? '${weather.current!.humidity} %'
-                    : 'Loading...',
-                imagePath: 'assets/icons/humidity.png',
-              ),
-            ],
-          ),
-        ));
+  String _formatTime(int timestamp) {
+    final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    return DateFormat('h:mm a').format(date);
   }
 
-  Widget _buildCurrentDetailsItem(context,
-      {required String value, required String imagePath}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: .12),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+  Widget _buildGridItem(BuildContext context,
+      {required String label,
+      required String value,
+      required IconData icon,
+      required Color color}) {
+    return Expanded(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            height: 60,
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+              color: Theme.of(context)
+                  .colorScheme
+                  .surfaceContainerHighest
+                  .withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: Image.asset(imagePath),
+            child: Icon(icon, color: color, size: 28),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(fontSize: 12),
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.5),
+            ),
           ),
         ],
       ),
