@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../models/weather_model.dart';
 import '../providers/weather_provider.dart';
 import '../utils/format_temp.dart';
+import 'current_details_widget.dart';
 import 'error_widget.dart';
 
 class CurrentWidget extends ConsumerWidget {
@@ -58,7 +59,7 @@ class CurrentWidget extends ConsumerWidget {
                       Text(
                         weather != null
                             ? getFormattedTemperature(
-                                ref, weather.current!.temp!)
+                                ref, weather.current!.temp!.toInt())
                             : 'Load',
                         style: const TextStyle(
                           fontSize: 50,
@@ -84,7 +85,8 @@ class CurrentWidget extends ConsumerWidget {
                 ),
                 const SizedBox(width: 15),
               ],
-            )
+            ),
+            const CurrentDetailsWidget()
           ],
         ),
       ),
