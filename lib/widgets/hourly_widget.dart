@@ -35,7 +35,7 @@ class HourlyWidget extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
             child: Text(
               'Hourly Forecast',
               style: TextStyle(
@@ -45,7 +45,7 @@ class HourlyWidget extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 10),
+
           SizedBox(
             height: 160,
             child: ListView.separated(

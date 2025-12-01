@@ -30,10 +30,10 @@ class CurrentWidget extends ConsumerWidget {
       enabled: isLoading,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: theme.colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: theme.colorScheme.outlineVariant.withValues(alpha: 0.2),
           ),
@@ -116,10 +116,9 @@ class CurrentWidget extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 8),
             Divider(
                 color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3)),
-            const SizedBox(height: 15),
             CurrentDetailsWidget(currentData: current),
           ],
         ),

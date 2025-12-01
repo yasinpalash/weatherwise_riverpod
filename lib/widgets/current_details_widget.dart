@@ -34,7 +34,7 @@ class CurrentDetailsWidget extends ConsumerWidget {
                 color: Colors.orangeAccent),
           ],
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -74,7 +74,6 @@ class CurrentDetailsWidget extends ConsumerWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Theme.of(context)
                   .colorScheme

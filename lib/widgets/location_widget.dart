@@ -4,7 +4,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:weatherwise/providers/location_provider.dart';
 import 'package:weatherwise/utils/get_location_name.dart';
-
 import 'error_widget.dart';
 
 class LocationWidget extends ConsumerStatefulWidget {
@@ -29,49 +28,67 @@ class _LocationWidgetState extends ConsumerState<LocationWidget> {
 
   Widget _buildLocationWidget(
       BuildContext context, Placemark? location, bool isLoading) {
+    final city = location != null ? getLocationName(location) : "Loading...";
+    final country = location?.country ?? "Searching location...";
+    final theme = Theme.of(context);
     return Skeletonizer(
       enabled: isLoading,
       child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         decoration: BoxDecoration(
-          color: Theme.of(context)
-              .colorScheme
-              .onSurfaceVariant
-              .withValues(alpha: .1),
-          borderRadius: BorderRadius.circular(15),
+          color: theme.colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.2),
+          ),
         ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-        ),
-        margin: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
-        child: Column(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              margin: const EdgeInsets.only(left: 20, right: 20),
-              alignment: Alignment.topLeft,
-              child: Text(
-                location != null ? getLocationName(location) : 'Location',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontSize: 35,
-                  height: 2,
-                  fontWeight: FontWeight.w600,
-                ),
+            CircleAvatar(
+              radius: 22,
+              backgroundColor:
+                  Theme.of(context).colorScheme.primary.withOpacity(.15),
+              child: Icon(Icons.location_on_rounded,
+                  size: 26, color: Theme.of(context).colorScheme.primary),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    city,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w700,
+                      height: 1.1,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    country,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(.8),
+                    ),
+                  ),
+                ],
               ),
             ),
-            Container(
-              margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-              alignment: Alignment.topLeft,
-              child: Text(
-                location != null
-                    ? location.country ?? 'Unknown Country'
-                    : 'country ...',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  height: 1.5,
-                ),
-              ),
-            ),
+            if (!isLoading)
+              IconButton(
+                onPressed: () => ref.refresh(locationProvider),
+                icon: const Icon(Icons.refresh_rounded, size: 22),
+                tooltip: "Refresh Location",
+              )
           ],
         ),
       ),
