@@ -54,6 +54,11 @@ class CurrentDetailsWidget extends ConsumerWidget {
                 value: _formatTime(currentData!.sunset!),
                 icon: Icons.nights_stay_outlined,
                 color: Colors.indigoAccent),
+            _buildGridItem(context,
+                label: "Sunrise",
+                value: _formatTime(currentData!.sunrise!),
+                icon: Icons.wb_sunny_outlined,
+                color: Colors.indigoAccent),
           ],
         )
       ],

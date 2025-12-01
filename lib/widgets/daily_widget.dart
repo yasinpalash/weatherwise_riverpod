@@ -25,7 +25,6 @@ class DailyWidget extends ConsumerWidget {
   Widget _buildDailyList(BuildContext context, WidgetRef ref,
       WeatherData? weather, bool isLoading) {
     final dailyCount = isLoading ? 7 : weather?.daily?.length ?? 0;
-
     return SizedBox(
       height: 260,
       child: Skeletonizer(
@@ -44,11 +43,11 @@ class DailyWidget extends ConsumerWidget {
                 ),
               ),
             ),
-
             Expanded(
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 itemCount: dailyCount,
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
@@ -108,7 +107,6 @@ class _DailyCard extends StatelessWidget {
     final textColor = isCurrent ? Colors.white : colorScheme.onSurface;
     final secondaryTextColor =
         isCurrent ? Colors.white70 : colorScheme.onSurfaceVariant;
-
     return Container(
       width: 120,
       decoration: BoxDecoration(
@@ -147,7 +145,6 @@ class _DailyCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            
             Column(
               children: [
                 Text(
@@ -211,12 +208,12 @@ class _DailyCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _DetailItem(
+                  buildDetailItem(
                     icon: Icons.water_drop_outlined,
                     value: '$humidity%',
                     color: textColor,
                   ),
-                  _DetailItem(
+                  buildDetailItem(
                     icon: Icons.air,
                     value: '${windSpeed.round()}',
                     color: textColor,
@@ -231,28 +228,25 @@ class _DailyCard extends StatelessWidget {
   }
 }
 
-class _DetailItem extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final Color color;
-
-  const _DetailItem(
-      {required this.icon, required this.value, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 14, color: color),
-        const SizedBox(width: 4),
-        Text(
-          value,
-          style: TextStyle(
-              fontSize: 11, color: color, fontWeight: FontWeight.w500),
+Widget buildDetailItem({
+  required IconData icon,
+  required String value,
+  required Color color,
+}) {
+  return Row(
+    children: [
+      Icon(icon, size: 14, color: color),
+      const SizedBox(width: 4),
+      Text(
+        value,
+        style: TextStyle(
+          fontSize: 11,
+          color: color,
+          fontWeight: FontWeight.w500,
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
 
 class _DailyCardSkeleton extends StatelessWidget {

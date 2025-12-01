@@ -49,7 +49,7 @@ class _LocationWidgetState extends ConsumerState<LocationWidget> {
             CircleAvatar(
               radius: 22,
               backgroundColor:
-                  Theme.of(context).colorScheme.primary.withOpacity(.15),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: .15),
               child: Icon(Icons.location_on_rounded,
                   size: 26, color: Theme.of(context).colorScheme.primary),
             ),

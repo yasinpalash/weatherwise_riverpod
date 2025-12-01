@@ -45,7 +45,6 @@ class HourlyWidget extends ConsumerWidget {
               ),
             ),
           ),
-
           SizedBox(
             height: 160,
             child: ListView.separated(
@@ -74,7 +73,6 @@ class HourlyWidget extends ConsumerWidget {
               },
             ),
           ),
-
         ],
       ),
     );
@@ -98,7 +96,6 @@ class _HourlyCapsule extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final popPercent = ((item.pop ?? 0) * 100).round();
     final hasRain = popPercent > 0;
-
     return Container(
       width: 70,
       padding: const EdgeInsets.symmetric(vertical: 12),
