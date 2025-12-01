@@ -35,7 +35,7 @@ class HourlyWidget extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
             child: Text(
               'Hourly Forecast',
               style: TextStyle(
@@ -45,7 +45,6 @@ class HourlyWidget extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 10),
           SizedBox(
             height: 160,
             child: ListView.separated(
@@ -74,7 +73,6 @@ class HourlyWidget extends ConsumerWidget {
               },
             ),
           ),
-
         ],
       ),
     );
@@ -98,7 +96,6 @@ class _HourlyCapsule extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final popPercent = ((item.pop ?? 0) * 100).round();
     final hasRain = popPercent > 0;
-
     return Container(
       width: 70,
       padding: const EdgeInsets.symmetric(vertical: 12),

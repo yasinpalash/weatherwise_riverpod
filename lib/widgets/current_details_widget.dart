@@ -34,7 +34,7 @@ class CurrentDetailsWidget extends ConsumerWidget {
                 color: Colors.orangeAccent),
           ],
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -53,6 +53,11 @@ class CurrentDetailsWidget extends ConsumerWidget {
                 label: "Sunset",
                 value: _formatTime(currentData!.sunset!),
                 icon: Icons.nights_stay_outlined,
+                color: Colors.indigoAccent),
+            _buildGridItem(context,
+                label: "Sunrise",
+                value: _formatTime(currentData!.sunrise!),
+                icon: Icons.wb_sunny_outlined,
                 color: Colors.indigoAccent),
           ],
         )
@@ -74,7 +79,6 @@ class CurrentDetailsWidget extends ConsumerWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Theme.of(context)
                   .colorScheme

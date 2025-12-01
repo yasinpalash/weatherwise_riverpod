@@ -25,62 +25,58 @@ class DailyWidget extends ConsumerWidget {
   Widget _buildDailyList(BuildContext context, WidgetRef ref,
       WeatherData? weather, bool isLoading) {
     final dailyCount = isLoading ? 7 : weather?.daily?.length ?? 0;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
+    return SizedBox(
+      height: 260,
+      child: Skeletonizer(
+        enabled: isLoading,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              child: Text(
                 'Next 7 Days',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
-              const Icon(Icons.calendar_month_outlined,
-                  size: 20, color: Colors.grey),
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 230,
-          child: Skeletonizer(
-            enabled: isLoading,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              itemCount: dailyCount,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
-              itemBuilder: (context, index) {
-                if (isLoading) {
-                  return const _DailyCardSkeleton();
-                }
-                final day = weather!.daily![index];
-                final date = getFormattedDateTime(day.dt!);
-                final icon = day.weather![0].icon;
-                final maxTemp =
-                    getFormattedTemperature(ref, day.temp!.max!.toInt());
-                final minTemp =
-                    getFormattedTemperature(ref, day.temp!.min!.toInt());
-
-                return _DailyCard(
-                  date: date,
-                  icon: icon.toString(),
-                  maxTemp: maxTemp,
-                  minTemp: minTemp,
-                  humidity: day.humidity!,
-                  windSpeed: day.windSpeed!,
-                  isCurrent: index == 0,
-                );
-              },
             ),
-          ),
+            Expanded(
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                itemCount: dailyCount,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  if (isLoading) {
+                    return const _DailyCardSkeleton();
+                  }
+                  final day = weather!.daily![index];
+                  final date = getFormattedDateTime(day.dt!);
+                  final icon = day.weather![0].icon;
+                  final maxTemp =
+                      getFormattedTemperature(ref, day.temp!.max!.toInt());
+                  final minTemp =
+                      getFormattedTemperature(ref, day.temp!.min!.toInt());
+
+                  return _DailyCard(
+                    date: date,
+                    icon: icon.toString(),
+                    maxTemp: maxTemp,
+                    minTemp: minTemp,
+                    humidity: day.humidity!,
+                    windSpeed: day.windSpeed!,
+                    isCurrent: index == 0,
+                  );
+                },
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -111,7 +107,6 @@ class _DailyCard extends StatelessWidget {
     final textColor = isCurrent ? Colors.white : colorScheme.onSurface;
     final secondaryTextColor =
         isCurrent ? Colors.white70 : colorScheme.onSurfaceVariant;
-
     return Container(
       width: 120,
       decoration: BoxDecoration(
@@ -127,6 +122,9 @@ class _DailyCard extends StatelessWidget {
             : null,
         color: isCurrent ? null : colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(24),
+        border: isCurrent
+            ? null
+            : Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
         boxShadow: [
           if (isCurrent)
             BoxShadow(
@@ -210,12 +208,12 @@ class _DailyCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _DetailItem(
+                  buildDetailItem(
                     icon: Icons.water_drop_outlined,
                     value: '$humidity%',
                     color: textColor,
                   ),
-                  _DetailItem(
+                  buildDetailItem(
                     icon: Icons.air,
                     value: '${windSpeed.round()}',
                     color: textColor,
@@ -230,28 +228,25 @@ class _DailyCard extends StatelessWidget {
   }
 }
 
-class _DetailItem extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final Color color;
-
-  const _DetailItem(
-      {required this.icon, required this.value, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 14, color: color),
-        const SizedBox(width: 4),
-        Text(
-          value,
-          style: TextStyle(
-              fontSize: 11, color: color, fontWeight: FontWeight.w500),
+Widget buildDetailItem({
+  required IconData icon,
+  required String value,
+  required Color color,
+}) {
+  return Row(
+    children: [
+      Icon(icon, size: 14, color: color),
+      const SizedBox(width: 4),
+      Text(
+        value,
+        style: TextStyle(
+          fontSize: 11,
+          color: color,
+          fontWeight: FontWeight.w500,
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
 
 class _DailyCardSkeleton extends StatelessWidget {
