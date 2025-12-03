@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weatherwise/widgets/current_widget.dart';
+import '../widgets/slider_widget.dart';
 import '../widgets/daily_widget.dart';
 import '../widgets/hourly_widget.dart';
 import '../widgets/location_widget.dart';
@@ -25,6 +26,7 @@ class WeatherScreen extends ConsumerWidget {
             SizedBox(height: 10),
             DailyWidget(),
             SizedBox(height: 8),
+            SliderWidget(),
           ],
         ),
       ),
