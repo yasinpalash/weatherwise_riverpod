@@ -9,8 +9,8 @@ class App extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeProvider);
-
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Weather Wise',
       theme: theme,
       home: const HomeScreen(),
