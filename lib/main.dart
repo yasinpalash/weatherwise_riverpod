@@ -6,6 +6,7 @@ import 'app.dart';
 import 'core/constants/hive_constants.dart';
 import 'models/current_weather.dart';
 import 'models/daily_weather.dart';
+import 'models/favorite_location.dart';
 import 'models/hourly_weather.dart';
 import 'models/weather_model.dart';
 
@@ -41,4 +42,5 @@ Future<void> registerHiveAdapters() async {
   if (!Hive.isAdapterRegistered(4)) Hive.registerAdapter(CurrentAdapter());
   if (!Hive.isAdapterRegistered(5)) Hive.registerAdapter(WeatherDescriptionAdapter());
   if (!Hive.isAdapterRegistered(6)) Hive.registerAdapter(DailyFeelsLikeAdapter());
+  if (!Hive.isAdapterRegistered(7)) Hive.registerAdapter(FavoriteLocationAdapter());
 }

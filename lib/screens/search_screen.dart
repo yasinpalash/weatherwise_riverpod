@@ -8,7 +8,7 @@ import '../providers/location_provider.dart';
 import '../providers/screens_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/weather_provider.dart';
-import '../widgets/search_suggestion_tile.dart';
+import '../widgets/location_card.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});

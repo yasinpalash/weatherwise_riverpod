@@ -10,7 +10,7 @@ final weatherProvider = FutureProvider<WeatherData?>(
   (ref) async {
     final searchState = ref.read(searchProvider);
     final internetState = ref.read(internetStatusProvider);
-
+    //final favoriteNotifier = ref.read(favoriteProvider.notifier);
     //! Hive Boxes
     final weatherDataBox =
         Hive.box<WeatherData>(HiveConstants.weatherDataBoxName);
@@ -31,6 +31,7 @@ final weatherProvider = FutureProvider<WeatherData?>(
               searchState.lat,
               searchState.lon,
             );
+       // favoriteNotifier.addFavorite(searchState.lat, searchState.lon, weatherData, place);
       }
     } else {
       if (await internetState.isConnected()) {
