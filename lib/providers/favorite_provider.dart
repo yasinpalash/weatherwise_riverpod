@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:hive/hive.dart';
 import 'package:weatherwise/models/favorite_location.dart';
 import '../core/constants/hive_constants.dart';
+import '../models/weather_model.dart';
 
 final favoriteProvider =
     StateNotifierProvider<FavoriteLocationNotifier, List<FavoriteLocation>>(
@@ -13,6 +15,32 @@ final favoriteProvider =
 class FavoriteLocationNotifier extends StateNotifier<List<FavoriteLocation>> {
   FavoriteLocationNotifier() : super([]) {
     _loadFavoriteLocationsFromDB();
+  }
+  void addFavorite(
+      double lat, double lon, WeatherData weather, Placemark place) {
+    final index = state.indexWhere((loc) => loc.lat == lat && loc.lon == lon);
+    if (index != -1) {
+      // Updating existing location
+      final updatedFav = state[index].copyWith(
+        temp: weather.current!.temp!,
+        icon: weather.current!.weather![0].icon,
+        description: weather.current!.weather![0].description,
+      );
+      state = [updatedFav, ...state.where((ele) => ele != state[index])];
+    } else {
+      // Add new location
+      final fav = FavoriteLocation(
+        lat: lat,
+        lon: lon,
+        city: getLocationName(place),
+        country: place.country ?? 'Unknown Country',
+        temp: weather.current!.temp!,
+        description: weather.current!.weather![0].description,
+        icon: weather.current!.weather![0].icon,
+      );
+      state = [fav, ...state];
+      _saveFavoriteLocationInDB(state);
+    }
   }
   void removeFavorite(FavoriteLocation fav) {
     state = state.where((ele) => ele != fav).toList();
