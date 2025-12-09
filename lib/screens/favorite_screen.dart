@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/favorite_provider.dart';
 import '../providers/internet_provider.dart';
+import '../providers/location_provider.dart';
+import '../providers/screens_provider.dart';
+import '../providers/search_provider.dart';
+import '../providers/weather_provider.dart';
+import '../widgets/favorite_tile.dart';
 
 class FavoriteScreen extends ConsumerWidget {
   const FavoriteScreen({super.key});
@@ -48,7 +53,7 @@ class FavoriteScreen extends ConsumerWidget {
                         margin: const EdgeInsets.only(left: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.red.withOpacity(.4),
+                          color: Colors.red.withValues(alpha: .4),
                         ),
                         child: const Icon(Icons.delete),
                       ),

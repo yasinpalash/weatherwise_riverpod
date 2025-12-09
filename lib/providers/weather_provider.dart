@@ -34,7 +34,8 @@ final weatherProvider = FutureProvider<WeatherData?>(
               searchState.lat,
               searchState.lon,
             );
-       // favoriteNotifier.addFavorite(searchState.lat, searchState.lon, weatherData, place);
+        favoriteNotifier.addFavorite(
+            searchState.lat, searchState.lon, weatherData, place);
       }
     } else {
       if (await internetState.isConnected()) {

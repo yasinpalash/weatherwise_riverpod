@@ -18,7 +18,10 @@ class HourlyWidget extends ConsumerWidget {
 
     return weatherAsync.when(
       data: (weather) => _buildHourlyList(context, ref, weather!, false),
-      error: (err, st) => const ShowErrorToUser(),
+      error: (err, st) {
+        debugPrint(err.toString());
+        return const ShowErrorToUser();
+      },
       loading: () => _buildHourlyList(context, ref, null, true),
     );
   }
