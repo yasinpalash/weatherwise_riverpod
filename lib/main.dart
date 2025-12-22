@@ -13,15 +13,11 @@ import 'models/weather_model.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //! Initializing Hive
   final appStorageDirPath = await getApplicationDocumentsDirectory();
   Hive.initFlutter();
   Hive.init(appStorageDirPath.path);
 
-  //! registering the adapters
   await registerHiveAdapters();
-
-  //! Opening Hive boxes
   await Hive.openBox<WeatherData>(HiveConstants.weatherDataBoxName);
   await Hive.openBox<FavoriteLocation>(HiveConstants.favoriteLocationsBoxName);
   await Hive.openBox<String>(HiveConstants.prefBoxName);
