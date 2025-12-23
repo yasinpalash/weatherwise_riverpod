@@ -1,16 +1,26 @@
-# weatherwise
+# 🌦️ WeatherWise
 
-A new Flutter project.
+WeatherWise is a modern Flutter weather application built using the **OpenWeather One Call 3.0 API**.  
+It provides real-time weather data, forecasts, and offline access using local storage.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🚀 Features
 
-A few resources to get you started if this is your first Flutter project:
+- 🌍 Real-time current weather
+- ⏰ Hourly weather forecast
+- 📅 7-day daily forecast
+- 🌡️ Temperature (min / max / feels like)
+- 💧 Humidity, pressure & wind speed
+- 🌧️ Rain & snow volume
+- 🌅 Sunrise & sunset time
+- 🌎 Timezone-based weather data
+- 📡 Offline support using Hive
+- 🔄 Auto refresh when internet reconnects
+- ❤️ Favorite locations support
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🧠 App Flow (How the App Works)
+<img width="1536" height="1024" alt="ChatGPT Image Dec 23, 2025, 09_27_04 AM" src="https://github.com/user-attachments/assets/94aabe86-e3ad-4a93-970b-6c71daa3d8b8" />
+
