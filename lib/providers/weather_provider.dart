@@ -14,7 +14,6 @@ final weatherProvider = FutureProvider<WeatherData?>(
     final internetState = ref.read(internetStatusProvider);
     final favoriteNotifier = ref.read(favoriteProvider.notifier);
 
-    //! Hive Boxes
     final weatherDataBox =
         Hive.box<WeatherData>(HiveConstants.weatherDataBoxName);
     final hasDataFetchedOnceBox =
@@ -23,7 +22,6 @@ final weatherProvider = FutureProvider<WeatherData?>(
     WeatherData? weatherData;
 
     if (searchState.isSearching) {
-      //! for searched location
       if (await internetState.isConnected()) {
         weatherData = await ref
             .read(apiServiceProvider)
@@ -39,7 +37,6 @@ final weatherProvider = FutureProvider<WeatherData?>(
       }
     } else {
       if (await internetState.isConnected()) {
-        //! for current location with internet
         final position =
             await ref.read(locationServiceProvider).getUserPosition();
         weatherData = await ref.read(apiServiceProvider).fetchWeatherData(
@@ -51,7 +48,6 @@ final weatherProvider = FutureProvider<WeatherData?>(
           hasDataFetchedOnceBox.put(HiveConstants.hasDataFetchedOnceKey, true);
         }
       } else {
-        //! Offline handling for current location
         weatherData = weatherDataBox.get(HiveConstants.weatherDataKey,
             defaultValue: null);
       }

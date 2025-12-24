@@ -77,7 +77,7 @@ class _LocationWidgetState extends ConsumerState<LocationWidget> {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withOpacity(.8),
+                          .withValues(alpha: .8),
                     ),
                   ),
                 ],
