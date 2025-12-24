@@ -1,4 +1,4 @@
-const String apiKey = "1ed73d5036b030578d407e9cc19af66e";
+
 
 String weatherApiUrl(double lat, double lon) {
   const primaryUrl = 'https://api.openweathermap.org';
